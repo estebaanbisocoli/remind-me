@@ -23,11 +23,7 @@
 
 <script>
 import moment from "moment";
-const STATUS = {
-  IN_PROGRESS: "inprogress",
-  DONE: "done",
-  TODO: "todo"
-};
+
 export default {
   props: ["items"],
   data() {
