@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const ReminderSchema = require("./reminder-schema");
+const passportLocalMongoose = require("passport-local-mongoose");
 const userSchema = new mongoose.Schema({
-  email: { unique: true, type: String },
-  password: String,
+  username: { unique: true, type: String },
   reminders: [ReminderSchema]
 });
+userSchema.plugin(passportLocalMongoose);
 
 const UserModel = mongoose.model("user", userSchema);
 

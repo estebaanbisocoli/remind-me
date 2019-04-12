@@ -1,16 +1,31 @@
 const Router = require("express").Router;
 const User = require("../../../models/user");
-const router = Router({ mergeParams: true });
+const router = Router();
+const passport = require("../../../auth");
 
-router.get("/", async (req, res) => {
-  const users = await User.find({});
-  res.json(users);
+router.post("/", (request, response) => {
+  // Creates and saves a new user with a salt and hashed password
+  User.register(
+    new User({ username: request.body.username }),
+    request.body.password,
+    function(err, user) {
+      if (err) {
+        console.log(err);
+        return response.json("error");
+      } else {
+        passport.authenticate("local")(request, response, function() {
+          response.json({ loggedIn: true });
+        });
+      }
+    }
+  );
 });
-
-router.post("/", async (req, res) => {
-  const user = new User(req.body);
-  await user.save();
-  res.json(user);
-});
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/api/user",
+    failureRedirect: "/login"
+  })
+);
 
 module.exports = router;
